@@ -1,7 +1,7 @@
 require (Rmisc)
 require(ggplot2)
 require(readxl)
-require(dplyr)
+require(plyr)
 
 #life history trait data set
 data1=read_excel("data.xlsx",sheet = "lifehistory_trait")
@@ -81,6 +81,11 @@ points(full.dat$longitude,full.dat$latitude,pch=20,col="black",cex=3)
 
 map("china")
 points(full.dat$longitude,full.dat$latitude,pch=20,col="red",cex=3)
+maps::map.scale(x=80, y=20, ratio=FALSE, relwidth=0.1) 
+#library(GISTools)  
+north.arrow(xb=85, yb=25, len=.5, lab="N")  
+
+
 
 k<-extract(w,full.dat[,c("longitude","latitude")])
 full.dat2<-data.frame(full.dat,k)
@@ -107,3 +112,38 @@ summary(lm(latitude~Comp.1.1,data=full.dat3))
 
 ggplot(full.dat3,aes(x=latitude,y=Comp.1.1))+stat_smooth()+geom_point()
 ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.1))+stat_smooth()+geom_point()
+
+dat3.sub<-full.dat3%>%
+  filter(Comp.1.1>-5)
+ggplot(dat3.sub,aes(x=Comp.1.1,y=Comp.1))+stat_smooth(method="lm")+geom_point()
+
+#### Trait PC1 analysis
+
+#summary(lm(Comp.1~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.dat3))
+fullcompmod<-lm(Comp.1~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.dat3)
+summary(stepAIC(fullcompmod,direction="both"))
+
+ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.1))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Growth rate-hardiness trade-off (PC1)")+xlab("Climate (PC1)")
+ggplot(full.dat3,aes(x=Comp.2.1,y=Comp.1))+stat_smooth(method="lm")+geom_point()+ylab("Growth rate-hardiness trade-off (PC1)")+xlab("Overall Precipitation (PC2)")
+
+
+
+#### Trait PC2 analysis
+
+
+fullcompmod2<-lm(Comp.2~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.dat3)
+summary(stepAIC(fullcompmod2,direction="both"))
+#fig
+ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.2))+stat_smooth(method="lm",size=1)+geom_point()+ylab("Thermal Tolerance trade-off (PC2)")+xlab("Climate (PC1)")
+
+
+
+
+#### Trait PC3 analysis
+
+
+fullcompmod3<-lm(pca$scores[,3]~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.dat3)
+summary(stepAIC(fullcompmod3,direction="both"))
+#fig
+ggplot(full.dat3,aes(x=Comp.1.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Climate (PC1)")
+ggplot(full.dat3,aes(x=Comp.2.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Climate (PC2)")
