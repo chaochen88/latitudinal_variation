@@ -124,7 +124,8 @@ fullcompmod<-lm(Comp.1~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.d
 summary(stepAIC(fullcompmod,direction="both"))
 
 ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.1))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Growth rate-hardiness trade-off (PC1)")+xlab("Climate (PC1)")
-ggplot(full.dat3,aes(x=Comp.2.1,y=Comp.1))+stat_smooth(method="lm")+geom_point()+ylab("Growth rate-hardiness trade-off (PC1)")+xlab("Overall Precipitation (PC2)")
+full.dat3$resid1<-resid(lm(Comp.1~Comp.1.1+I(Comp.1.1^2),data=full.dat3))
+ggplot(full.dat3,aes(x=Comp.2.1,y=resid1))+stat_smooth(method="lm")+geom_point()+ylab("Growth rate-hardiness trade-off (PC1)")+xlab("Overall Precipitation (PC2)")
 
 
 
