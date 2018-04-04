@@ -123,19 +123,22 @@ ggplot(dat3.sub,aes(x=Comp.1.1,y=Comp.1))+stat_smooth(method="lm")+geom_point()
 fullcompmod<-lm(Comp.1~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.dat3)
 summary(stepAIC(fullcompmod,direction="both"))
 
-ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.1))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Growth rate-hardiness trade-off (PC1)")+xlab("Climate (PC1)")
+#plot based on model
+full.dat3$resid0<-resid(lm(Comp.1~Comp.2.1+I(Comp.2.1^2),data=full.dat3))
+a<-ggplot(full.dat3,aes(x=Comp.1.1,y=resid0))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Growth rate-hardiness trade-off (PC1)")+xlab("Seasonal to Aseasonal Cliamte (PC1)")
 full.dat3$resid1<-resid(lm(Comp.1~Comp.1.1+I(Comp.1.1^2),data=full.dat3))
-ggplot(full.dat3,aes(x=Comp.2.1,y=resid1))+stat_smooth(method="lm")+geom_point()+ylab("Growth rate-hardiness trade-off (PC1)")+xlab("Overall Precipitation (PC2)")
+b<-ggplot(full.dat3,aes(x=Comp.2.1,y=resid1))+stat_smooth(method="lm")+geom_point()+ylab("")+xlab("Overall Precipitation (PC2)")#+ylab("Growth rate-hardiness trade-off (PC1)")
 
+library(gridExtra)
 
-
+grid.arrange(a,b,ncol=2)
 #### Trait PC2 analysis
-
+library(MASS)
 
 fullcompmod2<-lm(Comp.2~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.dat3)
 summary(stepAIC(fullcompmod2,direction="both"))
 #fig
-ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.2))+stat_smooth(method="lm",size=1)+geom_point()+ylab("Thermal Tolerance trade-off (PC2)")+xlab("Climate (PC1)")
+ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.2))+stat_smooth(method="lm",size=1)+geom_point()+ylab("Thermal Tolerance trade-off (PC2)")+xlab("Seasonal to Aseasonal Climate (PC1)")
 
 
 
@@ -146,5 +149,6 @@ ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.2))+stat_smooth(method="lm",size=1)+geom_
 fullcompmod3<-lm(pca$scores[,3]~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.dat3)
 summary(stepAIC(fullcompmod3,direction="both"))
 #fig
-ggplot(full.dat3,aes(x=Comp.1.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Climate (PC1)")
-ggplot(full.dat3,aes(x=Comp.2.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Climate (PC2)")
+c<-ggplot(full.dat3,aes(x=Comp.1.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Seasonal to Aseasonal Climate (PC1)")
+d<-ggplot(full.dat3,aes(x=Comp.2.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Overall Precipitation (PC2)")
+
