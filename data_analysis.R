@@ -152,3 +152,4 @@ summary(stepAIC(fullcompmod3,direction="both"))
 c<-ggplot(full.dat3,aes(x=Comp.1.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Seasonal to Aseasonal Climate (PC1)")
 d<-ggplot(full.dat3,aes(x=Comp.2.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Overall Precipitation (PC2)")
 
+grid.arrange(c,d,ncol=2)
