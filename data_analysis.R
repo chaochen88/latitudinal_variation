@@ -102,13 +102,8 @@ bioclim.pc<-bio$scores[,1:3]
 full.dat3<-data.frame(full.dat2,bioclim.pc)
 str(full.dat3)
 
-
-summary(lm(Comp.1~bio1,data=full.dat3))
-summary(lm(Comp.1~bio15,data=full.dat3))
-
-
-summary(lm(desi~bio5,data=full.dat3))
 summary(lm(latitude~Comp.1.1,data=full.dat3))
+summary(lm(latitude~Comp.1.1+Comp.2.1,data=full.dat3))
 
 ggplot(full.dat3,aes(x=latitude,y=Comp.1.1))+stat_smooth()+geom_point()
 ggplot(full.dat3,aes(x=Comp.1.1,y=Comp.1))+stat_smooth()+geom_point()
