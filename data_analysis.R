@@ -112,6 +112,16 @@ dat3.sub<-full.dat3%>%
   filter(Comp.1.1>-5)
 ggplot(dat3.sub,aes(x=Comp.1.1,y=Comp.1))+stat_smooth(method="lm")+geom_point()
 
+
+### latitudinal variation in climate pcs
+
+names(full.dat3)
+
+ggplot(full.dat3,aes(y=latitude,x=Comp.1.1))+geom_point()+stat_smooth(method="lm")
+ggplot(full.dat3,aes(y=latitude,x=Comp.2.1))+geom_point()+stat_smooth(method="lm")
+
+
+
 #### Trait PC1 analysis
 
 #summary(lm(Comp.1~Comp.1.1+I(Comp.1.1^2)+Comp.2.1+I(Comp.2.1^2),data=full.dat3))
