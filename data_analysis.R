@@ -41,7 +41,8 @@ write.csv(full_mean,"full_mean.csv")
 
 data=read.csv("full_mean.csv")
 
-data_pca=data[,c("starvation","desi","hkt","ccrt","growthrate")]
+#data_pca=data[,c("starvation","desi","hkt","ccrt","growthrate")]
+data_pca=data[,c("starvation","desi","hkt","CCRT","growthrate")]
 pca=princomp(scale(data_pca))
 summary(pca)
 pca$loadings[,1:3]
