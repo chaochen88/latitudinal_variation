@@ -43,6 +43,7 @@ data=read.csv("full_mean.csv")
 
 #data_pca=data[,c("starvation","desi","hkt","ccrt","growthrate")]
 data_pca=data[,c("starvation","desi","hkt","CCRT","growthrate")]
+data_pca=data[,c("starvation","desi","hkt","growthrate")]
 pca=princomp(scale(data_pca))
 summary(pca)
 pca$loadings[,1:3]
@@ -88,7 +89,7 @@ north.arrow(xb=85, yb=25, len=.5, lab="N")
 
 
 
-k<-extract(w,full.dat[,c("longitude","latitude")])
+k<-raster::extract(w,full.dat[,c("longitude","latitude")])
 full.dat2<-data.frame(full.dat,k)
 
 
@@ -159,3 +160,25 @@ c<-ggplot(full.dat3,aes(x=Comp.1.1,y=pca$scores[,3]))+stat_smooth(method="lm",fo
 d<-ggplot(full.dat3,aes(x=Comp.2.1,y=pca$scores[,3]))+stat_smooth(method="lm",formula= y~x +I(x^2),size=1)+geom_point()+ylab("Desiccation/Starvation - Thermal Tolerance Trade-off (PC3)")+xlab("Overall Precipitation (PC2)")
 
 grid.arrange(c,d,ncol=2)
+
+
+
+
+ggplot(full.dat3,aes(CCRT,growthrate))+geom_point()+stat_smooth(method="lm")
+ggplot(full.dat3,aes(hkt,growthrate))+geom_point()+stat_smooth(method="lm")
+ggplot(full.dat3,aes(desi,growthrate))+geom_point()+stat_smooth(method="lm")
+ggplot(full.dat3,aes(starvation,growthrate))+geom_point()+stat_smooth(method="lm")
+
+
+full.dat4<-full.dat3%>%
+  select(c("latitude","growthrate","CCRT","hkt","starvation","desi","Comp.1.1","Comp.2.1"))
+
+names(full.dat4)
+
+dat4.long<-gather(full.dat4,traits,measurement,growthrate:desi)
+
+ggplot(dat4.long,aes(x=Comp.1.1,y=measurement))+geom_point()+stat_smooth()+facet_wrap(~traits,scale="free")
+#ggplot(dat4.long,aes(x=Comp.2.1,y=measurement))+geom_point()+stat_smooth()+facet_wrap(~traits,scale="free")
+
+
+ggplot(dat4.long,aes(x=latitude,y=measurement))+geom_point()+stat_smooth()+facet_wrap(~traits,scale="free")
